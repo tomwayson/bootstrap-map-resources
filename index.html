@@ -15,7 +15,7 @@
     <!-- Bootstrap-map-js -->
     <!-- <link rel="stylesheet" type="text/css" href="http://esri.github.io/bootstrap-map-js/src/css/bootstrapmap.css">    -->
 
-    <link href="http://jsdev.arcgis.com/4.0beta1/esri/css/esri.css" rel="stylesheet" type="text/css">
+    <link href="https://js.arcgis.com/4.0beta1/esri/css/esri.css" rel="stylesheet" type="text/css">
 
     <style type="text/css">
 
@@ -187,73 +187,81 @@
 
     require([
         "esri/Map",
-        "esri/layers/ArcGISTiledMapServiceLayer",
+        // "esri/layers/ArcGISTiledLayer",
         "esri/layers/ArcGISElevationLayer",
+        "esri/views/SceneView",
 
         "dojo/on", "dojo/query", "dojo/keys",
         "dojo/dom",
 
         "dojo/domReady!"
     ], function(
-        Map, ArcGISTiledMapServiceLayer, ArcGISElevationLayer, on, query, keys, dom
+        Map, /*ArcGISTiledLayer,*/ ArcGISElevationLayer, SceneView,
+        on, query, keys, dom
     ) {
       
-      map = new Map(dom.byId("map"), {
-        viewType: "3d"
+      map = new Map(/*dom.byId("map"), */{
+        // viewType: "3d"
+        basemap: "satellite"
       });
 
-      // map.add(new ArcGISTiledMapServiceLayer("http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer"));
-      // map.add(new ArcGISTiledMapServiceLayer("http://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer"));
+      view = new SceneView({
+        container: "map",
+        map: map,
+        scale: 240000000
+      });
+      // map.add(new ArcGISTiledLayer("http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer"));
+      // map.add(new ArcGISTiledLayer("http://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer"));
 
-      map.add(new ArcGISTiledMapServiceLayer("http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer"));
+      // map.add(new ArcGISTiledLayer("http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer"));
       map.add(new ArcGISElevationLayer("http://elevation3d.arcgis.com/arcgis/rest/services/WorldElevation3D/Terrain3D/ImageServer"), 0);
 
       map.then(function() {
-            // Prevent navigation
-            map.view.navigationController.destroy();
+            // TODO: Prevent navigation
+            // map.view.navigationController.destroy();
 
         // on(map.view.navigationController, "keydown", function(event) {
         //     event.preventDefault();
         //     event.stopPropagation();
         //     return false;
         // });
-            camera = map.view.get("camera");
-            animate();
+            // camera = map.view.get("camera");
+            // animate();
         });
 
-        function animate() {
-            setTimeout( function(){
-                // Animate
-                requestAnimationFrame(animate);
-                // Move map
-                if (fps > 0) {
-                    var p = map.view.get("center");
-                    var lon = p.get("longitude");
-                    if (lon <= -180) {
-                    lon = 180;
-                    }
-                    lon = lon - .5;
-                    p.set("longitude",lon);
-                    p.z = 0;
-                    p.hasZ = true;
-                    map.view.set("center", p);
-                }
-            }, 500 / fps);
-        }
+        // function animate() {
+        //     setTimeout( function(){
+        //         // Animate
+        //         requestAnimationFrame(animate);
+        //         // Move map
+        //         if (fps > 0) {
+        //             var p = map.view.get("center");
+        //             var lon = p.get("longitude");
+        //             if (lon <= -180) {
+        //             lon = 180;
+        //             }
+        //             lon = lon - .5;
+        //             p.set("longitude",lon);
+        //             p.z = 0;
+        //             p.hasZ = true;
+        //             map.view.set("center", p);
+        //         }
+        //     }, 500 / fps);
+        // }
 
-        on(document, "keydown", function(event) {
-            switch(event.keyCode) {
-              case keys.UP_ARROW:                  
-                    hit = true;
-                    fps += fps > 45 ? 0 : 5;
-                    break;
-              case keys.DOWN_ARROW:
-                    hit = true;
-                    fps -= fps > 0 ? 5 : 0;
-                    break;
-            }
-            //console.log(fps);
-        });
+        // on(document, "keydown", function(event) {
+        //     switch(event.keyCode) {
+        //       case keys.UP_ARROW:                  
+        //             hit = true;
+        //             fps += fps > 45 ? 0 : 5;
+        //             break;
+        //       case keys.DOWN_ARROW:
+        //             hit = true;
+        //             fps -= fps > 0 ? 5 : 0;
+        //             break;
+        //     }
+        //     //console.log(fps);
+        // });
          
     });
   </script>
